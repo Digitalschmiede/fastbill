@@ -9,7 +9,7 @@ class fastbill
 {
 	private $email = '';
 	private $apiKey = '';
-	private $apiUrl = 'https://portal.fastbill.com/api/1.0/api.php';
+	private $apiUrl = 'https://my.fastbill.com/api/1.0/api.php';
 	
 	public function __construct($email, $apiKey)
 	{
