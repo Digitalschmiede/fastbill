@@ -133,4 +133,31 @@ class FastBill
             else { return false; }
         }
     }
+    
+    public function GetAllInvoices() {
+        $this->checkAPICredentials();
+        $invoices_array = array();
+        $yearlist = array(date("Y")-1,date("Y"));
+        $monthlist = array('1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12');
+
+        foreach ($yearlist as $year) {
+            foreach ($monthlist as $month) {
+                $invoices = $this->request(array("SERVICE" => "invoice.get", "FILTER" => array("TYPE" => "outgoing", "YEAR" => $year, "MONTH" => $month), "LIMIT" => 100 ));
+                if (!isset($invoices['RESPONSE']['INVOICES'])) {
+                    throw new Exception("Cannot get Invoices from Fastbill!");
+                }
+                foreach ($invoices['RESPONSE']['INVOICES'] as $invoice) {
+                    if(!count($invoice) == 0) {
+                        $invoices_array[] = $invoice;
+                    }
+                    if(count($invoice) >= 100) {
+                        // READ ME: the limit of the fastbill api at this time
+                        // 100 per month per year!
+                        throw new Exception("Fastbill return 100 invoices!");
+                    } 
+                }                
+            }
+        }
+        return $invoices_array;
+    }
 }
